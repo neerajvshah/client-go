@@ -119,6 +119,9 @@ type LeaderElectionRecord struct {
 	AcquireTime          metav1.Time `json:"acquireTime"`
 	RenewTime            metav1.Time `json:"renewTime"`
 	LeaderTransitions    int         `json:"leaderTransitions"`
+	// OustedIdentity is the ID of the current or a potential holder who will not attempt to acquire
+	// the lease further.
+	OustedIdentity string `json:"oustedIdentity"`
 }
 
 // EventRecorder records a change in the ResourceLock.
