@@ -238,6 +238,10 @@ func (le *LeaderElector) IsLeader() bool {
 	return le.getObservedRecord().HolderIdentity == le.config.Lock.Identity()
 }
 
+func (le *LeaderElector) IsOusted() bool {
+	return le.getObservedRecord().OustedIdentity == le.config.Lock.Identity()
+}
+
 // acquire loops calling tryAcquireOrRenew and returns true immediately when tryAcquireOrRenew succeeds.
 // Returns false if ctx signals done.
 func (le *LeaderElector) acquire(ctx context.Context) bool {
@@ -351,6 +355,10 @@ func (le *LeaderElector) tryAcquireOrRenew(ctx context.Context) bool {
 		!le.IsLeader() {
 		klog.V(4).Infof("lock is held by %v and has not yet expired", oldLeaderElectionRecord.HolderIdentity)
 		return false
+	}
+
+	if le.IsOusted() {
+		klog.V(4).Infof("lock indicates %v is ousted, aborting update", oldLeaderElectionRecord.OustedIdentity)
 	}
 
 	// 3. We're going to try to update. The leaderElectionRecord is set to it's default
