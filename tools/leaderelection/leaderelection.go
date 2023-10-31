@@ -240,6 +240,10 @@ func (le *LeaderElector) IsLeader() bool {
 	return le.getObservedRecord().HolderIdentity == le.config.Lock.Identity()
 }
 
+func (le *LeaderElector) IsRejected() bool {
+	return le.getObservedRecord().RejectedHolderIdentity == le.config.Lock.Identity()
+}
+
 // acquire loops calling tryAcquireOrRenew and returns true immediately when tryAcquireOrRenew succeeds.
 // Returns false if ctx signals done.
 func (le *LeaderElector) acquire(ctx context.Context) bool {
@@ -352,6 +356,11 @@ func (le *LeaderElector) tryAcquireOrRenew(ctx context.Context) bool {
 		le.observedTime.Add(time.Second*time.Duration(oldLeaderElectionRecord.LeaseDurationSeconds)).After(now.Time) &&
 		!le.IsLeader() {
 		klog.V(4).Infof("lock is held by %v and has not yet expired", oldLeaderElectionRecord.HolderIdentity)
+		return false
+	}
+
+	if le.IsRejected() {
+		klog.V(4).Infof("lock indicates %v is rejected, aborting update", oldLeaderElectionRecord.RejectedHolderIdentity)
 		return false
 	}
 
