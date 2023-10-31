@@ -114,14 +114,12 @@ type LeaderElectionRecord struct {
 	// attempt to acquire leases with empty identities and will wait for the full lease
 	// interval to expire before attempting to reacquire. This value is set to empty when
 	// a client voluntarily steps down.
-	HolderIdentity       string      `json:"holderIdentity"`
-	LeaseDurationSeconds int         `json:"leaseDurationSeconds"`
-	AcquireTime          metav1.Time `json:"acquireTime"`
-	RenewTime            metav1.Time `json:"renewTime"`
-	LeaderTransitions    int         `json:"leaderTransitions"`
-	// OustedIdentity is the ID of the current or a potential holder who will not attempt to acquire
-	// the lease further.
-	OustedIdentity string `json:"oustedIdentity"`
+	HolderIdentity         string      `json:"holderIdentity"`
+	LeaseDurationSeconds   int         `json:"leaseDurationSeconds"`
+	AcquireTime            metav1.Time `json:"acquireTime"`
+	RenewTime              metav1.Time `json:"renewTime"`
+	LeaderTransitions      int         `json:"leaderTransitions"`
+	RejectedHolderIdentity string      `json:"rejectedHolderIdentity"`
 }
 
 // EventRecorder records a change in the ResourceLock.

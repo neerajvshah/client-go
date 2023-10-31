@@ -45,8 +45,8 @@ func (ll *LeaseLock) Get(ctx context.Context) (*LeaderElectionRecord, []byte, er
 	}
 	ll.lease = lease
 	record := LeaseSpecToLeaderElectionRecord(&ll.lease.Spec)
-	if oustedIdentity, ok := lease.Annotations["oustedIdentity"]; ok {
-		record.OustedIdentity = oustedIdentity
+	if rejectedHolderIdentity, ok := lease.Annotations["kubernetes.io/reject-holder-identity"]; ok {
+		record.RejectedHolderIdentity = rejectedHolderIdentity
 	}
 	recordByte, err := json.Marshal(*record)
 	if err != nil {
